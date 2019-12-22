@@ -1,4 +1,4 @@
-﻿using Eday.Webservice.BuildingBlocks.EventBus.Events;
+﻿using Webservice.BuildingBlocks.EventBus.Events;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;

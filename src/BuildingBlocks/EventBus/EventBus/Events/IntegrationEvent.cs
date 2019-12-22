@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Eday.Webservice.BuildingBlocks.EventBus.Events
+namespace Webservice.BuildingBlocks.EventBus.Events
 {
     /// <summary>
     /// 发布的内容（消息）必须是IntegrationEvent及其子类

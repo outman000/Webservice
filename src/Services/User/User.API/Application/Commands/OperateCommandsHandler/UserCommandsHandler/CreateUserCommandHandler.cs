@@ -32,8 +32,11 @@ namespace User.API.Application.Commands.OperateCommandsHandler.UserCommandsHandl
         }
         public async Task<bool> Handle(CreateUserCommand message, CancellationToken cancellationToken)
         {
-            var orderStartedIntegrationEvent = new UserStartedIntegrationEvent(message.UserId);
-            await _userIntegrationEventService.AddAndSaveEventAsync(orderStartedIntegrationEvent);
+            //添加一个事件到一个 新篮子里面
+            var userCreatedIntegrationEvent = new UserCreatedIntegrationEvent(message.UserId);
+            //添加然后保存事件
+            //这里应该就回去找他的事件处理程序
+            await _userIntegrationEventService.AddAndSaveEventAsync(userCreatedIntegrationEvent);
 
           ///  添加 / 更新 用户聚合根
           //  DDD 模式注释：通过顺序聚合根添加子实体和值对象
@@ -52,7 +55,7 @@ namespace User.API.Application.Commands.OperateCommandsHandler.UserCommandsHandl
                                             message.CreateUserName,
                                             message.deptid);
             _logger.LogInformation("----- Creating Order - Order: {@Order}", userinfo);
-
+ 
             //添加
             _userRespository.Add(userinfo);
 

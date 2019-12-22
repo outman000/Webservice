@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Eday.Webservice.BuildingBlocks.EventBus.Extensions
+namespace Webservice.BuildingBlocks.EventBus.Extensions
 {
     //命令总线的通用类型拓展
     public static class GenericTypeExtensions
     {
+        /// <summary>
+        /// 获取类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static string GetGenericTypeName(this Type type)
         {
             var typeName = string.Empty;

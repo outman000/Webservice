@@ -1,4 +1,4 @@
-﻿using Eday.Webservice.BuildingBlocks.EventBus.Events;
+﻿using Webservice.BuildingBlocks.EventBus.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace IntegrationEventLogEF.Services
 {
-    public class IntegrationEventLogService
+    public class IntegrationEventLogService : IIntegrationEventLogService
     {
         private readonly IntegrationEventLogContext _integrationEventLogContext;
         private readonly DbConnection _dbConnection;

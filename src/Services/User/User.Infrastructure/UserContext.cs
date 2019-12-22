@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,10 +14,11 @@ namespace User.Infrastructure
 {
     public class UserContext : DbContext, IUnitOfWork
     {
+        //表
         public DbSet<UserInfo> UserInfo { get; set; }
 
-        private readonly IMediator _mediator;
-        private IDbContextTransaction _currentTransaction;
+        private readonly IMediator _mediator;//中介
+        private IDbContextTransaction _currentTransaction;//事务
         /// <summary>
         /// 上下文构造方法
         /// </summary>
@@ -55,5 +57,67 @@ namespace User.Infrastructure
 
             return true;
         }
+        /// <summary>
+        /// 开始事务
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            if (_currentTransaction != null) return null;
+
+            _currentTransaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+
+            return _currentTransaction;
+        }
+
+        /// <summary>
+        /// 提交此次事务
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
+        public async Task CommitTransactionAsync(IDbContextTransaction transaction)
+        {
+            if (transaction == null) throw new ArgumentNullException(nameof(transaction));
+            if (transaction != _currentTransaction) throw new InvalidOperationException($"Transaction {transaction.TransactionId} is not current");
+
+            try
+            {
+                await SaveChangesAsync();
+                transaction.Commit();
+            }
+            catch
+            {
+                //回滚事务
+                RollbackTransaction();
+                throw;
+            }
+            finally
+            {
+                if (_currentTransaction != null)
+                {
+                    _currentTransaction.Dispose();
+                    _currentTransaction = null;
+                }
+            }
+        }
+        /// <summary>
+        /// 事务回滚
+        /// </summary>
+        public void RollbackTransaction()
+        {
+            try
+            {
+                _currentTransaction?.Rollback();
+            }
+            finally
+            {
+                if (_currentTransaction != null)
+                {
+                    _currentTransaction.Dispose();
+                    _currentTransaction = null;
+                }
+            }
+        }
+
     }
 }

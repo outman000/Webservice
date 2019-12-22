@@ -35,7 +35,9 @@ namespace User.API.Application.Commands.OperateCommands.UserCommands
         public DateTime Createtime { get; private set; }
         [DataMember]
         public long deptid { get; private set; }
-
+        /// <summary>
+        /// 创建构造方法
+        /// </summary>
         public CreateUserCommand(string userId, string userPwd,string username,
                                  string gender, string birthdate, string phoneCall,
                                  string mobileCall, string email, 
@@ -58,5 +60,9 @@ namespace User.API.Application.Commands.OperateCommands.UserCommands
             this.deptid = deptid;
         }
 
+        public CreateUserCommand(string userId)
+        {
+            UserId = userId;
+        }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Eday.Webservice.BuildingBlocks.EventBus.Abstractions;
-using Eday.Webservice.BuildingBlocks.EventBus.Events;
+﻿using Webservice.BuildingBlocks.EventBus.Abstractions;
+using Webservice.BuildingBlocks.EventBus.Events;
 using IntegrationEventLogEF;
 using IntegrationEventLogEF.Services;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +14,7 @@ using User.Infrastructure;
 namespace User.API.Application.IntegrationEvents
 {
     //用户集成事件处理程序
-    public class UserIntegrationEventService
+    public class UserIntegrationEventService: IUserIntegrationEventService
     {
 
         //根据数据库连接字符串，返回一个集成事件工厂
@@ -64,13 +64,15 @@ namespace User.API.Application.IntegrationEvents
                 }
             }
         }
-
+        //添加然后保存事件
         public async Task AddAndSaveEventAsync(IntegrationEvent evt)
         {
             _logger.LogInformation("----- Enqueuing integration event {IntegrationEventId} to repository ({@IntegrationEvent})", evt.Id, evt);
 
             await _eventLogService.SaveEventAsync(evt, _userContext.GetCurrentTransaction());
         }
+     
+ 
 
     }
 }

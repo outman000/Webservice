@@ -1,11 +1,11 @@
-﻿using Eday.Webservice.BuildingBlocks.EventBus.Abstractions;
-using Eday.Webservice.BuildingBlocks.EventBus.Events;
+﻿using Webservice.BuildingBlocks.EventBus.Abstractions;
+using Webservice.BuildingBlocks.EventBus.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Eday.Webservice.BuildingBlocks.EventBus
+namespace Webservice.BuildingBlocks.EventBus
 {
     /// <summary>
     /// 基于内存的事件总线实现方法

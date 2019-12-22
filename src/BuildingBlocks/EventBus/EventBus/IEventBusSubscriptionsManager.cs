@@ -1,13 +1,13 @@
-﻿using Eday.Webservice.BuildingBlocks.EventBus.Abstractions;
-using Eday.Webservice.BuildingBlocks.EventBus.Events;
+﻿using Webservice.BuildingBlocks.EventBus.Abstractions;
+using Webservice.BuildingBlocks.EventBus.Events;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Eday.Webservice.BuildingBlocks.EventBus
+namespace Webservice.BuildingBlocks.EventBus
 {
     /// <summary>
-    /// 事件总线订阅管理接口
+    /// 事件总线订阅管理接口（订阅管理器接口）
     /// </summary>
     public interface IEventBusSubscriptionsManager
     {

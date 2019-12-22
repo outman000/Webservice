@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Eday.Webservice.BuildingBlocks.EventBus
+namespace Webservice.BuildingBlocks.EventBus
 {
     /// <summary>
     /// 订阅信息

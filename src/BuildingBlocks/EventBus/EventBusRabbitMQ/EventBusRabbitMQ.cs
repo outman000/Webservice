@@ -1,8 +1,8 @@
 ﻿using Autofac;
-using Eday.Webservice.BuildingBlocks.EventBus;
-using Eday.Webservice.BuildingBlocks.EventBus.Abstractions;
-using Eday.Webservice.BuildingBlocks.EventBus.Events;
-using Eday.Webservice.BuildingBlocks.EventBus.Extensions;
+using Webservice.BuildingBlocks.EventBus;
+using Webservice.BuildingBlocks.EventBus.Abstractions;
+using Webservice.BuildingBlocks.EventBus.Events;
+using Webservice.BuildingBlocks.EventBus.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -17,11 +17,12 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Eday.WebServers.BuildingBlocks.EventBusRabbitMQ
+namespace WebServers.BuildingBlocks.EventBusRabbitMQ
 {
     public class EventBusRabbitMQ : IEventBus, IDisposable
     {
-        const string BROKER_NAME = "eshop_event_bus";
+        //交换机名称
+        const string BROKER_NAME = "User_event_bus";
 
         private readonly IRabbitMQPersistentConnection _persistentConnection;
         private readonly ILogger<EventBusRabbitMQ> _logger;
@@ -48,17 +49,18 @@ namespace Eday.WebServers.BuildingBlocks.EventBusRabbitMQ
 
         private void SubsManager_OnEventRemoved(object sender, string eventName)
         {
+            //如果没有请求到连接,尝试重连
             if (!_persistentConnection.IsConnected)
             {
                 _persistentConnection.TryConnect();
             }
-
+            //创建频道
             using (var channel = _persistentConnection.CreateModel())
             {
                 channel.QueueUnbind(queue: _queueName,
                     exchange: BROKER_NAME,
                     routingKey: eventName);
-
+                //如果订阅是空的，那么管理当前频道
                 if (_subsManager.IsEmpty)
                 {
                     _queueName = string.Empty;
@@ -66,14 +68,16 @@ namespace Eday.WebServers.BuildingBlocks.EventBusRabbitMQ
                 }
             }
         }
-
+        //发布消息
         public void Publish(IntegrationEvent @event)
         {
+            //判断是否连接
             if (!_persistentConnection.IsConnected)
             {
                 _persistentConnection.TryConnect();
             }
-
+            //如果有异常，重连，还是不行，将事件记录到日志当中
+            //使用Polly，以2的阶乘的时间间隔进行重试。（第一次2s后，第二次4s后，第三次8s后...重试）
             var policy = RetryPolicy.Handle<BrokerUnreachableException>()
                 .Or<SocketException>()
                 .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
@@ -85,11 +89,13 @@ namespace Eday.WebServers.BuildingBlocks.EventBusRabbitMQ
 
             _logger.LogTrace("Creating RabbitMQ channel to publish event: {EventId} ({EventName})", @event.Id, eventName);
 
+            //首先传见一个频道
             using (var channel = _persistentConnection.CreateModel())
             {
-
+                //记录申明
                 _logger.LogTrace("Declaring RabbitMQ exchange to publish event: {EventId}", @event.Id);
-
+                //定义一个交换机
+                //使用direct全匹配、单播形式的路由机制进行消息分发
                 channel.ExchangeDeclare(exchange: BROKER_NAME, type: "direct");
 
                 var message = JsonConvert.SerializeObject(@event);
@@ -98,10 +104,10 @@ namespace Eday.WebServers.BuildingBlocks.EventBusRabbitMQ
                 policy.Execute(() =>
                 {
                     var properties = channel.CreateBasicProperties();
-                    properties.DeliveryMode = 2; // persistent
+                    properties.DeliveryMode = 2; // 消息持久化
 
                     _logger.LogTrace("Publishing event to RabbitMQ: {EventId}", @event.Id);
-
+                    //发布消息
                     channel.BasicPublish(
                         exchange: BROKER_NAME,
                         routingKey: eventName,
@@ -140,9 +146,10 @@ namespace Eday.WebServers.BuildingBlocks.EventBusRabbitMQ
             _subsManager.AddSubscription<T, TH>();
             StartBasicConsume();
         }
-
+        //事件订阅逻辑
         private void DoInternalSubscription(string eventName)
         {
+            //检查当前事件是否存在
             var containsKey = _subsManager.HasSubscriptionsForEvent(eventName);
             if (!containsKey)
             {
@@ -177,6 +184,7 @@ namespace Eday.WebServers.BuildingBlocks.EventBusRabbitMQ
             _subsManager.RemoveDynamicSubscription<TH>(eventName);
         }
 
+        //销毁
         public void Dispose()
         {
             if (_consumerChannel != null)
@@ -187,7 +195,7 @@ namespace Eday.WebServers.BuildingBlocks.EventBusRabbitMQ
             _subsManager.Clear();
         }
         /// <summary>
-        /// 启动基本消耗
+        /// 根据队列 开始消费
         /// </summary>
         private void StartBasicConsume()
         {
@@ -195,9 +203,10 @@ namespace Eday.WebServers.BuildingBlocks.EventBusRabbitMQ
 
             if (_consumerChannel != null)
             {
+                //事件基本消费者
                 var consumer = new AsyncEventingBasicConsumer(_consumerChannel);
-
-                consumer.Received += Consumer_Received;
+                //接收到消息后触发Consumer_Received事件
+                consumer.Received += Consumer_Received;//妙啊
 
                 _consumerChannel.BasicConsume(
                     queue: _queueName,
@@ -206,11 +215,12 @@ namespace Eday.WebServers.BuildingBlocks.EventBusRabbitMQ
             }
             else
             {
+                
                 _logger.LogError("StartBasicConsume can't call on _consumerChannel == null");
             }
         }
         /// <summary>
-        /// 消费者消息接收
+        /// 消费者接收到消息的时候触发的事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
@@ -222,6 +232,7 @@ namespace Eday.WebServers.BuildingBlocks.EventBusRabbitMQ
 
             try
             {
+                //如果包含异常信息那么直接抛出异常
                 if (message.ToLowerInvariant().Contains("throw-fake-exception"))
                 {
                     throw new InvalidOperationException($"Fake exception requested: \"{message}\"");
@@ -261,7 +272,7 @@ namespace Eday.WebServers.BuildingBlocks.EventBusRabbitMQ
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
-
+            //回调出现异常
             channel.CallbackException += (sender, ea) =>
             {
                 _logger.LogWarning(ea.Exception, "Recreating RabbitMQ consumer channel");

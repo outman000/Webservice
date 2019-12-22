@@ -1,9 +1,9 @@
-﻿using Eday.Webservice.BuildingBlocks.EventBus.Events;
+﻿using Webservice.BuildingBlocks.EventBus.Events;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Eday.Webservice.BuildingBlocks.EventBus.Abstractions
+namespace Webservice.BuildingBlocks.EventBus.Abstractions
 {
     public  interface IEventBus
     {

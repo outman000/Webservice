@@ -65,7 +65,7 @@ namespace User.Domain.AggregatesModel.UserAggregates
             _departid = id;
         }    
         /// <summary>
-        /// 开始添加用户领域事件到事件集合中
+        /// 开始添加用户领域事件到事件集合中(再执行事务操作的时候调用领域事件)
         /// </summary>
         private void AddUserStartedDomainEvent(string Userid, string Gender, string Birthdate,
                     string PhoneCall, string MobileCall, string Email
@@ -74,7 +74,7 @@ namespace User.Domain.AggregatesModel.UserAggregates
             var UserCreatedDomainEvent = new UserCreatedDomainEvent(this, Userid, Gender, Birthdate,
                                                                       PhoneCall, MobileCall, Email, UpdateTime
                                                                      , Createtime, deptid);
-
+            
             this.AddDomainEvent(UserCreatedDomainEvent);
         }
 
