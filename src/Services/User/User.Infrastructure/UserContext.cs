@@ -14,6 +14,7 @@ namespace User.Infrastructure
 {
     public class UserContext : DbContext, IUnitOfWork
     {
+        public const string DEFAULT_SCHEMA = "UserTable_Info";
         //表
         public DbSet<UserInfo> UserInfo { get; set; }
 

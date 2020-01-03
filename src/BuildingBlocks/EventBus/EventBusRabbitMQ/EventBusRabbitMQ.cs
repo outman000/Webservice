@@ -40,8 +40,8 @@ namespace WebServers.BuildingBlocks.EventBusRabbitMQ
             _persistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _subsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
-            _queueName = queueName;
-            _consumerChannel = CreateConsumerChannel();
+            _queueName = queueName; //队列名称
+            _consumerChannel = CreateConsumerChannel();//消费者
             _autofac = autofac;
             _retryCount = retryCount;
             _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
@@ -60,7 +60,7 @@ namespace WebServers.BuildingBlocks.EventBusRabbitMQ
                 channel.QueueUnbind(queue: _queueName,
                     exchange: BROKER_NAME,
                     routingKey: eventName);
-                //如果订阅是空的，那么管理当前频道
+                //如果订阅是空的,频道边为空
                 if (_subsManager.IsEmpty)
                 {
                     _queueName = string.Empty;
@@ -194,6 +194,45 @@ namespace WebServers.BuildingBlocks.EventBusRabbitMQ
 
             _subsManager.Clear();
         }
+
+
+
+        /// <summary>
+        /// 创建消费者
+        /// </summary>
+        /// <returns></returns>
+        private IModel CreateConsumerChannel()
+        {
+            if (!_persistentConnection.IsConnected)
+            {
+                _persistentConnection.TryConnect();
+            }
+
+            _logger.LogTrace("Creating RabbitMQ consumer channel");
+
+            var channel = _persistentConnection.CreateModel();
+
+            channel.ExchangeDeclare(exchange: BROKER_NAME,
+                                    type: "direct");
+
+            channel.QueueDeclare(queue: _queueName,
+                                 durable: true,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+            //回调出现异常
+            channel.CallbackException += (sender, ea) =>
+            {
+                _logger.LogWarning(ea.Exception, "Recreating RabbitMQ consumer channel");
+
+                _consumerChannel.Dispose();
+                _consumerChannel = CreateConsumerChannel();
+                StartBasicConsume();
+            };
+
+            return channel;
+        }
+
         /// <summary>
         /// 根据队列 开始消费
         /// </summary>
@@ -248,41 +287,6 @@ namespace WebServers.BuildingBlocks.EventBusRabbitMQ
             //  即使在例外情况下，消息从队列中取下。
             //在真实世界应用程序中，这应该使用死信交换 （DLX） 来处理。   
             _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
-        }
-        /// <summary>
-        /// 创建消费者
-        /// </summary>
-        /// <returns></returns>
-        private IModel CreateConsumerChannel()
-        {
-            if (!_persistentConnection.IsConnected)
-            {
-                _persistentConnection.TryConnect();
-            }
-
-            _logger.LogTrace("Creating RabbitMQ consumer channel");
-
-            var channel = _persistentConnection.CreateModel();
-
-            channel.ExchangeDeclare(exchange: BROKER_NAME,
-                                    type: "direct");
-
-            channel.QueueDeclare(queue: _queueName,
-                                 durable: true,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
-            //回调出现异常
-            channel.CallbackException += (sender, ea) =>
-            {
-                _logger.LogWarning(ea.Exception, "Recreating RabbitMQ consumer channel");
-
-                _consumerChannel.Dispose();
-                _consumerChannel = CreateConsumerChannel();
-                StartBasicConsume();
-            };
-
-            return channel;
         }
         /// <summary>
         /// 执行事件
@@ -341,5 +345,8 @@ namespace WebServers.BuildingBlocks.EventBusRabbitMQ
                 _logger.LogWarning("No subscription for RabbitMQ event: {EventName}", eventName);
             }
         }
+
+
+
     }
 }
