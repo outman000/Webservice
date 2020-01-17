@@ -8,15 +8,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using User.Domain.AggregatesModel.UserAggregates;
+using User.Domain.AggregatesModel.UserAggregates.Entitys;
 using User.Domain.SeedWork.IUnitWork;
 
 namespace User.Infrastructure
 {
     public class UserContext : DbContext, IUnitOfWork
     {
-        public const string DEFAULT_SCHEMA = "UserTable_Info";
+        public const string DEFAULT_SCHEMA = "User_Information";
         //表
-        public DbSet<UserInfo> UserInfo { get; set; }
+        public DbSet<UserInformation> UserInformation { get; set; }
 
         private readonly IMediator _mediator;//中介
         private IDbContextTransaction _currentTransaction;//事务

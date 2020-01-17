@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using User.API.Application.Queries.IUserQueries;
 using User.Domain.AggregatesModel.UserAggregates;
+using User.Domain.AggregatesModel.UserAggregates.Entitys;
 
 namespace User.API.Application.Queries.UserQueries
 {
@@ -18,13 +19,13 @@ namespace User.API.Application.Queries.UserQueries
         {
             _connectionString = !string.IsNullOrWhiteSpace(constr) ? constr : throw new ArgumentNullException(nameof(constr));
         }
-        public async Task<IEnumerable<UserInfo>> GetOrderAsync(int id)
+        public async Task<IEnumerable<UserInformation>> GetOrderAsync(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                var result = await connection.QueryAsync<UserInfo>(
+                var result = await connection.QueryAsync<UserInformation>(
                    @"select * from userinfo 
                         WHERE o.Id=@id"
                         , new { id }

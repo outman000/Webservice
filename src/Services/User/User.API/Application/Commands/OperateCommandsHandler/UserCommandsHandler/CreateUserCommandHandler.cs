@@ -9,7 +9,8 @@ using User.API.Application.Commands.OperateCommands.UserCommands;
 using User.API.Application.IntegrationEvents;
 using User.API.Application.IntegrationEvents.Events.UserIntegrationEvent;
 using User.API.Infrastructure.Services;
-using User.Domain.AggregatesModel.UserAggregates;
+using User.Domain.AggregatesModel.UserAggregates.Entitys;
+using User.Domain.AggregatesModel.UserAggregates.Respository;
 
 namespace User.API.Application.Commands.OperateCommandsHandler.UserCommandsHandler
 {
@@ -38,22 +39,12 @@ namespace User.API.Application.Commands.OperateCommandsHandler.UserCommandsHandl
             //这里应该就回去找他的事件处理程序
             await _userIntegrationEventService.AddAndSaveEventAsync(userCreatedIntegrationEvent);
 
-          ///  添加 / 更新 用户聚合根
-          //  DDD 模式注释：通过顺序聚合根添加子实体和值对象
-          //   方法和构造函数，以便验证、不变量和业务逻辑
-          ///  确保在整个聚合中保持一致性
+            ///  添加 / 更新 用户聚合根
+            //  DDD 模式注释：通过顺序聚合根添加子实体和值对象
+            //   方法和构造函数，以便验证、不变量和业务逻辑
+            ///  确保在整个聚合中保持一致性
 
-            var userinfo = new UserInfo(    message.UserId,
-                                           message.UserName,
-                                            message.UserPwd,
-                                            message.Gender,
-                                            message.Birthdate,
-                                            message.PhoneCall,
-                                            message.MobileCall,
-                                            message.Email,
-                                            message.CreateUserId,
-                                            message.CreateUserName,
-                                            message.deptid);
+            UserInformation userinfo = null;
             _logger.LogInformation("----- Creating Order - Order: {@Order}", userinfo);
  
             //添加

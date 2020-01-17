@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using User.Domain.AggregatesModel.UserAggregates;
+using User.Domain.AggregatesModel.UserAggregates.Entitys;
+using User.Domain.AggregatesModel.UserAggregates.Respository;
 using User.Domain.SeedWork.IUnitWork;
 
 namespace User.Infrastructure.Repositories
@@ -24,14 +26,14 @@ namespace User.Infrastructure.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public UserInfo Add(UserInfo userInfo)
+        public UserInformation Add(UserInformation userInfo)
         {
-            return _context.UserInfo.Add(userInfo).Entity;
+            return _context.UserInformation.Add(userInfo).Entity;
         }
 
-        public async Task<UserInfo> GetAsync(string userid)
+        public async Task<UserInformation> GetAsync(string userid)
         {
-            var userInfo = await _context.UserInfo.FindAsync(userid);
+            var userInfo = await _context.UserInformation.FindAsync(userid);
             if (userInfo != null)
             {
                 await _context.Entry(userInfo)
@@ -40,7 +42,7 @@ namespace User.Infrastructure.Repositories
             return userInfo;
         }
 
-        public void Update(UserInfo userInfo)
+        public void Update(UserInformation userInfo)
         {
             _context.Entry(userInfo).State = EntityState.Modified;
         }

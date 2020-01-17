@@ -1,34 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using User.Domain.AggregatesModel.UserAggregates;
+
+using User.Domain.AggregatesModel.UserAggregates.Entitys;
 
 namespace User.Infrastructure.EntityConfigurations
 {
-    public class UserEntityTypeConfiguration : IEntityTypeConfiguration<UserInfo>
+    public class UserEntityTypeConfiguration : IEntityTypeConfiguration<UserInformation>
     {
-        public void Configure(EntityTypeBuilder<UserInfo> orderConfiguration)
+        public void Configure(EntityTypeBuilder<UserInformation> UserConfiguration)
         {
-            orderConfiguration.ToTable("buyers", UserContext.DEFAULT_SCHEMA);
+            UserConfiguration.ToTable("User_Information", UserContext.DEFAULT_SCHEMA);
 
-            orderConfiguration.HasKey(b => b.Id);
+            UserConfiguration.HasKey(o=>o.Id);
+      
 
-            orderConfiguration.Ignore(b => b.DomainEvents);
+            UserConfiguration.Ignore(b => b.DomainEvents);
 
-    
+            UserConfiguration.HasOne(o => o.status)
+                .WithMany()
+                .HasForeignKey("_userStatusId");
 
-            orderConfiguration.Property(b => b._createUserName)
-                .HasMaxLength(200)
-                .IsRequired();
-
-            orderConfiguration.HasIndex("IdentityGuid")
-              .IsUnique(true);
-
-          //  var navigation = orderConfiguration.Metadata.FindNavigation(nameof(Buyer.PaymentMethods));
-
-            //navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
+            UserConfiguration.OwnsOne(o => o.address);
         }
     }
 }

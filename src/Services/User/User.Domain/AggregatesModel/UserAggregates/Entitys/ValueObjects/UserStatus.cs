@@ -5,9 +5,9 @@ using System.Text;
 using User.Domain.Exceptions;
 using User.Domain.SeedWork.Enumerate;
 
-namespace User.Domain.AggregatesModel.UserAggregates
+namespace User.Domain.AggregatesModel.UserAggregates.Entitys.ValueObjects
 {
-    public  class UserStatus : Enumeration
+    public class UserStatus : Enumeration
     {
         public static UserStatus Activated = new UserStatus(1, nameof(Activated).ToLowerInvariant());
         public static UserStatus Frozen = new UserStatus(2, nameof(Frozen).ToLowerInvariant());
