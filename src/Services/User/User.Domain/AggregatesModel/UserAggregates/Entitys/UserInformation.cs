@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using User.Domain.AggregatesModel.OrganizationAggregate.Entitys;
 using User.Domain.AggregatesModel.UserAggregates.Entitys.ValueObjects;
 using User.Domain.Exceptions;
 using User.Domain.SeedWork.BaseEntity;
@@ -24,10 +25,7 @@ namespace User.Domain.AggregatesModel.UserAggregates.Entitys
         private string description;
         private CreateUserInfo createUserInfo;
 
-        private List<long> departs;
-
-
-
+        public List<long> _departsId;
         public Address address;
         public UserStatus status { get; private set; }
         private int userStatusId;

@@ -12,7 +12,7 @@ namespace IntegrationEventLogEF
         {
         }
 
-        public DbSet<IntegrationEventLogEntry> IntegrationEventLogs { get; set; }
+      //  public DbSet<IntegrationEventLogEntry> IntegrationEventLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
