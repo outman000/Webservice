@@ -10,16 +10,23 @@ namespace User.Infrastructure.EntityConfigurations
 {
     public class DepartInformationEntityConfiguration
     {
-        public void Configure(EntityTypeBuilder<DepartInformation> UserConfiguration)
+        public void Configure(EntityTypeBuilder<DepartInformation> DepartRelate)
         {
-            UserConfiguration.ToTable("User_Department", UserContext.DEFAULT_SCHEMA);
-            UserConfiguration.HasKey(o => o.Id);
-            UserConfiguration.Ignore(b => b.DomainEvents);
-            UserConfiguration.HasOne<UserInformation>()
-             .WithMany()
-             .IsRequired(false)
-             // .HasForeignKey("BuyerId");
-             .HasForeignKey("_UserId");
+            DepartRelate.ToTable("User_Organization", UserContext.DEFAULT_SCHEMA);
+            DepartRelate.HasKey(o => o.Id);
+            DepartRelate.Ignore(b => b.DomainEvents);
+
+            DepartRelate.Property<long>("_departparentId")
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasColumnName("departparentId")
+                .IsRequired();
+
+                                 
+
+            DepartRelate.OwnsOne(o => o.createUserInfo);
+
+
+
         }
     }
 }

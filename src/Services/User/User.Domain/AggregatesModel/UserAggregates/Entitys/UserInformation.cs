@@ -11,68 +11,54 @@ namespace User.Domain.AggregatesModel.UserAggregates.Entitys
 {
     public class UserInformation : Entity, IAggregateRootBase
     {
-        private string userId;
-        private string userName;
-        private string userPwd;
-        private string gender;
-        private string birthdate;
-        private string phoneCall;
-        private string mobileCall;
-        private string email;
+        //字段
+        public string userId { get; private set; }
+        public string userName { get; private set; }
+        public string userPwd { get; private set; }
+        public string gender { get; private set; }
+        public DateTime? birthdate { get; private set; }
+        public string phoneCall { get; private set; }
+        public string mobileCall { get; private set; }
+        public string email { get; private set; }
+        public string description { get; private set; }
+        public DateTime? updateTime { get; private set; }
+        public DateTime? createtime { get; private set; }
+        public CreateUserInfo createUserInfo { get; private set; }
+        //值对象
 
-        public DateTime updateTime { get; set; }
-        public DateTime createtime { get; set; }
-        private string description;
-        private CreateUserInfo createUserInfo;
+        public Address address { get; private set; }
 
-        public List<long> _departsId;
-        public Address address;
+        //建
+
+        private int userStatusId ;
         public UserStatus status { get; private set; }
-        private int userStatusId;
+ 
+        protected UserInformation()
+        { 
+        //ef
+        }
         /// <summary>
         ///  添加用户全部信息
         /// </summary>
-        public UserInformation(string Userid, string UserPwd, string Gender, string Birthdate, string UserName,
-                    string PhoneCall, string MobileCall, string Email, CreateUserInfo CreateInfo, List<long> deptid,Address address)
+        public UserInformation(string userId, string UserPwd, string Gender, DateTime Birthdate, string UserName,
+                    string PhoneCall, string MobileCall, string Email, CreateUserInfo CreateInfo,Address address)
         {
-            userId = Userid;
-            userName = UserName;
-            userPwd = UserPwd;
-            gender = Gender;
-            birthdate = Birthdate;
-            phoneCall = PhoneCall;
-            mobileCall = MobileCall;
-            email = Email;
-            createUserInfo = CreateInfo;
-            updateTime = DateTime.Now;
-            createtime = DateTime.Now;
-            userStatusId = UserStatus.Activated.Id;
-            departs = deptid;
+            this.userId = userId;
+            this.userName = UserName;
+            this.userPwd = UserPwd;
+            this.gender = Gender;
+            this.birthdate = Birthdate;
+            this.phoneCall = PhoneCall;
+            this.mobileCall = MobileCall;
+            this.email = Email;
+            this.createUserInfo = CreateInfo;
+            this.updateTime = DateTime.Now;
+            this.createtime = DateTime.Now;
+            this.userStatusId = UserStatus.Activated.Id;
+      
             this.address = address;
         }
-        /// <summary>
-        /// 设置用户部门
-        /// </summary>
-        public void AddDepart(int id)
-        {
-            departs.Add(id);
-        }
-
-        public void deleteDepart(List<int> departsIds)
-        {
-            for (int j = 0; j < departsIds.Count; j++)
-            {
-                for (int i = 0; i < departs.Count; i++)
-                {
-                    if (departsIds[j] == departs[i])
-                    {
-                        departs.Remove(i);
-                    }
-                }
-            }
-            
-        }
-
+     
 
 
 

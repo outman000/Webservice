@@ -46,5 +46,11 @@ namespace User.Infrastructure.Repositories
         {
             _context.Entry(userInfo).State = EntityState.Modified;
         }
+
+        public void Delete(UserInformation userInfo)
+        {
+            _context.Entry(userInfo).State = EntityState.Deleted;
+        }
+
     }
 }

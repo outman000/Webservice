@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using User.Domain.AggregatesModel.OrganizationAggregate.Entitys;
 using User.Domain.AggregatesModel.UserAggregates.Entitys;
 
@@ -10,16 +11,19 @@ namespace User.Infrastructure.EntityConfigurations
         public void Configure(EntityTypeBuilder<UserInformation> UserConfiguration)
         {
             UserConfiguration.ToTable("User_Information", UserContext.DEFAULT_SCHEMA);
-            UserConfiguration.HasKey(o=>o.Id);
+            //忽略
             UserConfiguration.Ignore(b => b.DomainEvents);
-            UserConfiguration.HasOne(o => o.status)
-                .WithMany()
-                .HasForeignKey("_userStatusId");
+            //兼职
+            UserConfiguration.HasKey(o=>o.Id);
+            UserConfiguration
+               .Property<int>("_userStatusId")
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasColumnName("userStatusId")
+                .IsRequired();
+
+            //值对象
             UserConfiguration.OwnsOne(o => o.address);
-            UserConfiguration.HasMany<DepartInformation>(o => o._departsId)
-             .IsRequired(false)
-             // .HasForeignKey("BuyerId");
-             .HasForeignKey(s=>s._departsId);
+            UserConfiguration.OwnsOne(o => o.createUserInfo);
         }
     }
 }

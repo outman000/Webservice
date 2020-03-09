@@ -5,8 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="AggregatesModel\OrganizationAggregate\Entitys\ValueObjects\" />
+    <Folder Include="AggregatesModel\UserDepartRelateAggregates\ValueObjects\" />
     <Folder Include="AggregatesModel\UserRightAggregates\" />
+    <Folder Include="AggregatesModel\UserRightRelateAggregates\" />
   </ItemGroup>
 
   <ItemGroup>

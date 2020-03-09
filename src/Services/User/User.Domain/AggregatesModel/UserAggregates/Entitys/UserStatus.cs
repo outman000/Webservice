@@ -5,12 +5,13 @@ using System.Text;
 using User.Domain.Exceptions;
 using User.Domain.SeedWork.Enumerate;
 
-namespace User.Domain.AggregatesModel.UserAggregates.Entitys.ValueObjects
+namespace User.Domain.AggregatesModel.UserAggregates.Entitys
 {
-    public class UserStatus : Enumeration
+    public class UserStatus: Enumeration
     {
         public static UserStatus Activated = new UserStatus(1, nameof(Activated).ToLowerInvariant());
         public static UserStatus Frozen = new UserStatus(2, nameof(Frozen).ToLowerInvariant());
+        public static UserStatus Deleted = new UserStatus(3, nameof(Deleted).ToLowerInvariant());
         //定义一个返回状态的集合
         public static IEnumerable<UserStatus> List() => new[] { Activated, Frozen };
         /// <summary>

@@ -4,13 +4,17 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using User.Domain.AggregatesModel.OrganizationAggregate.Entitys;
 using User.Domain.AggregatesModel.UserAggregates;
 using User.Domain.AggregatesModel.UserAggregates.Entitys;
+using User.Domain.AggregatesModel.UserDepartRelateAggregates;
 using User.Domain.SeedWork.IUnitWork;
+using User.Infrastructure.EntityConfigurations;
 
 namespace User.Infrastructure
 {
@@ -19,14 +23,34 @@ namespace User.Infrastructure
         public const string DEFAULT_SCHEMA = "PeopleManager";
         //表
         public DbSet<UserInformation> UserInformation { get; set; }
-        public DbSet<DepartInformation> DepartInformation { get; set; }
+       // public DbSet<UserDepartRelate> UserDepartRelate { get; set; }
+       // public DbSet<DepartInformation> DepartInformation { get; set; }
         private readonly IMediator _mediator;//中介
         private IDbContextTransaction _currentTransaction;//事务
         /// <summary>
         /// 上下文构造方法
         /// </summary>
         /// <param name="options"></param>
-        private UserContext(DbContextOptions<UserContext> options) : base(options) { }
+        public UserContext(DbContextOptions<UserContext> options) : base(options) { }
+
+        /// <summary>
+        /// 领域模型和数据表映射关系
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            //将实现了IEntityTypeConfiguration<Entity>接口的模型配置类加入到modelBuilder中，进行注册
+            var typesToRegister = Assembly.GetExecutingAssembly().GetTypes()
+                                                                .Where(q => q.GetInterface(typeof(IEntityTypeConfiguration<>).FullName) != null);
+            foreach (var type in typesToRegister)
+            {
+                dynamic configurationInstance = Activator.CreateInstance(type);
+                modelBuilder.ApplyConfiguration(configurationInstance);
+            }
+        }
+
+
         /// <summary>
         /// 持久化事务接口
         /// </summary>

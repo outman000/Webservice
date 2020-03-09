@@ -6,6 +6,6 @@ namespace User.Domain.AggregatesModel.UserAggregates.Service
 {
     public  class UserInformationService : IUserInformationService
     {
-
+      
     }
 }

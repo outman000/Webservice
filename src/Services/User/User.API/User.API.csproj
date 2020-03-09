@@ -6,6 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Infrastructure\Migrations\20200207100806_initdatabase.cs" />
+    <Compile Remove="Infrastructure\Migrations\20200207100806_initdatabase.Designer.cs" />
+    <Compile Remove="Infrastructure\Migrations\20200309044413_privatecolumn.cs" />
+    <Compile Remove="Infrastructure\Migrations\20200309044413_privatecolumn.Designer.cs" />
+    <Compile Remove="Infrastructure\Migrations\20200309044726_privatecolumn.cs" />
+    <Compile Remove="Infrastructure\Migrations\20200309044726_privatecolumn.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="appsettings.Development.json" />
   </ItemGroup>
 
