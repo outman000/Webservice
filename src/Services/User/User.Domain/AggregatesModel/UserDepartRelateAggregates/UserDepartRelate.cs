@@ -13,12 +13,22 @@ namespace User.Domain.AggregatesModel.UserDepartRelateAggregates
         public string descript { get; private set; }
         public string relatetype { get; private set; }
 
-        public UserDepartRelate(long userid, long orgid, string descript, string relatetype)
+        public DateTime?  createadate { get; private set; }
+
+        public DateTime? updatedate { get; private set; }
+
+        public UserDepartRelate()
+        {
+        }
+
+        public UserDepartRelate(long userid, long orgid, string descript, string relatetype, DateTime? createadate, DateTime? updatedate)
         {
             this.userid = userid;
             this.orgid = orgid;
-            this.descript = descript ?? throw new ArgumentNullException(nameof(descript));
-            this.relatetype = relatetype ?? throw new ArgumentNullException(nameof(relatetype));
+            this.descript = descript;
+            this.relatetype = relatetype;
+            this.createadate = createadate;
+            this.updatedate = updatedate;
         }
     }
 }

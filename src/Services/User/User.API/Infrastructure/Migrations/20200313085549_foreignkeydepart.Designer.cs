@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using User.Infrastructure;
 
 namespace User.API.Infrastructure.Migrations
 {
     [DbContext(typeof(UserContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20200313085549_foreignkeydepart")]
+    partial class foreignkeydepart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,53 +21,13 @@ namespace User.API.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("User.Domain.AggregatesModel.OrganizationAggregate.Entitys.DepartInformation", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long?>("_departparentId")
-                        .IsRequired()
-                        .HasColumnName("departparentId");
-
-                    b.Property<long?>("departInformationId");
-
-                    b.Property<string>("orgCode");
-
-                    b.Property<string>("orgGlobalNo");
-
-                    b.Property<string>("orgLevel");
-
-                    b.Property<string>("orgName");
-
-                    b.Property<long>("orgParentcode");
-
-                    b.Property<string>("orgPath");
-
-                    b.Property<string>("orgSequence");
-
-                    b.Property<string>("orgType");
-
-                    b.Property<string>("unionType");
-
-                    b.Property<string>("unitId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("departInformationId");
-
-                    b.ToTable("User_Organization","PeopleManager");
-                });
-
             modelBuilder.Entity("User.Domain.AggregatesModel.UserAggregates.Entitys.UserInformation", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("_userStatusId")
-                        .IsRequired()
+                    b.Property<long>("_userStatusId")
                         .HasColumnName("userStatusId");
 
                     b.Property<DateTime?>("birthdate");
@@ -110,56 +72,6 @@ namespace User.API.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserStatus");
-                });
-
-            modelBuilder.Entity("User.Domain.AggregatesModel.UserDepartRelateAggregates.UserDepartRelate", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime?>("createadate");
-
-                    b.Property<string>("descript");
-
-                    b.Property<long>("orgid");
-
-                    b.Property<string>("relatetype");
-
-                    b.Property<DateTime?>("updatedate");
-
-                    b.Property<long>("userid");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserOrganization_Relate","PeopleManager");
-                });
-
-            modelBuilder.Entity("User.Domain.AggregatesModel.OrganizationAggregate.Entitys.DepartInformation", b =>
-                {
-                    b.HasOne("User.Domain.AggregatesModel.OrganizationAggregate.Entitys.DepartInformation", "departInformation")
-                        .WithMany()
-                        .HasForeignKey("departInformationId");
-
-                    b.OwnsOne("User.Domain.AggregatesModel.OrganizationAggregate.Entitys.ValueObjects.CreateUserInfo", "createUserInfo", b1 =>
-                        {
-                            b1.Property<long>("DepartInformationId")
-                                .ValueGeneratedOnAdd()
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                            b1.Property<string>("_createUserId");
-
-                            b1.Property<string>("_createUserName");
-
-                            b1.HasKey("DepartInformationId");
-
-                            b1.ToTable("User_Organization","PeopleManager");
-
-                            b1.HasOne("User.Domain.AggregatesModel.OrganizationAggregate.Entitys.DepartInformation")
-                                .WithOne("createUserInfo")
-                                .HasForeignKey("User.Domain.AggregatesModel.OrganizationAggregate.Entitys.ValueObjects.CreateUserInfo", "DepartInformationId")
-                                .OnDelete(DeleteBehavior.Cascade);
-                        });
                 });
 
             modelBuilder.Entity("User.Domain.AggregatesModel.UserAggregates.Entitys.UserInformation", b =>

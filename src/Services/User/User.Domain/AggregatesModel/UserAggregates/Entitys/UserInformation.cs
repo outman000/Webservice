@@ -30,7 +30,7 @@ namespace User.Domain.AggregatesModel.UserAggregates.Entitys
 
         //建
 
-        private int userStatusId ;
+        private int? userStatusId ;
         public UserStatus status { get; private set; }
  
         protected UserInformation()

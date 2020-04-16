@@ -8,7 +8,7 @@ using User.Domain.AggregatesModel.UserAggregates.Entitys;
 
 namespace User.Infrastructure.EntityConfigurations
 {
-    public class DepartInformationEntityConfiguration
+    public class DepartInformationEntityConfiguration : IEntityTypeConfiguration<DepartInformation>
     {
         public void Configure(EntityTypeBuilder<DepartInformation> DepartRelate)
         {
@@ -16,7 +16,7 @@ namespace User.Infrastructure.EntityConfigurations
             DepartRelate.HasKey(o => o.Id);
             DepartRelate.Ignore(b => b.DomainEvents);
 
-            DepartRelate.Property<long>("_departparentId")
+            DepartRelate.Property<long?>("_departparentId")
                 .UsePropertyAccessMode(PropertyAccessMode.Field)
                 .HasColumnName("departparentId")
                 .IsRequired();

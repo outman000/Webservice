@@ -7,20 +7,28 @@ using User.Domain.AggregatesModel.UserDepartRelateAggregates;
 
 namespace User.Infrastructure.EntityConfigurations
 {
-    public class UserDepartRelateConfiguration
+    public class UserDepartRelateConfiguration : IEntityTypeConfiguration<UserDepartRelate>
     {
         public void Configure(EntityTypeBuilder<UserDepartRelate> DepartRelate)
         {
-            //DepartRelate.ToTable("User_Organization_Relate", UserContext.DEFAULT_SCHEMA);
+            DepartRelate.ToTable("UserOrganization_Relate", UserContext.DEFAULT_SCHEMA);
+
+            DepartRelate.HasKey(o => o.Id);
+            DepartRelate.Ignore(b => b.DomainEvents);
+
+
 
             DepartRelate
-            .Property<int?>("userid")
+            .Property<long>("userid")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .IsRequired(false);
+            .IsRequired();
             DepartRelate
-           .Property<int?>("orgid")
-           .UsePropertyAccessMode(PropertyAccessMode.Field)
-           .IsRequired(false);
+            .Property<long> ("orgid")
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .IsRequired();
+
+
+    
         }
     }
 }

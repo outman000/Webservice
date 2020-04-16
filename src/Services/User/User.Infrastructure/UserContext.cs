@@ -23,8 +23,8 @@ namespace User.Infrastructure
         public const string DEFAULT_SCHEMA = "PeopleManager";
         //表
         public DbSet<UserInformation> UserInformation { get; set; }
-       // public DbSet<UserDepartRelate> UserDepartRelate { get; set; }
-       // public DbSet<DepartInformation> DepartInformation { get; set; }
+        public DbSet<UserDepartRelate> UserDepartRelate { get; set; }
+        public DbSet<DepartInformation> DepartInformation { get; set; }
         private readonly IMediator _mediator;//中介
         private IDbContextTransaction _currentTransaction;//事务
         /// <summary>

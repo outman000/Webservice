@@ -16,7 +16,7 @@ namespace User.Infrastructure.EntityConfigurations
             //兼职
             UserConfiguration.HasKey(o=>o.Id);
             UserConfiguration
-               .Property<int>("_userStatusId")
+               .Property<long?>("_userStatusId")
                 .UsePropertyAccessMode(PropertyAccessMode.Field)
                 .HasColumnName("userStatusId")
                 .IsRequired();

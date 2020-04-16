@@ -23,8 +23,13 @@ namespace User.Domain.AggregatesModel.OrganizationAggregate.Entitys
         //值对象
         public CreateUserInfo createUserInfo { get; private set; }
         //建
-        public long _departparentId { get; private set; }
+        public long? _departparentId { get; private set ; }
         public   DepartInformation departInformation { get;  set; }
+
+        public DepartInformation()
+        {
+        }
+
 
         //方法
         public DepartInformation(string orgName, string orgCode, long orgParentcode, string orgType, string unitId,
